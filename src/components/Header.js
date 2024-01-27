@@ -1,54 +1,37 @@
-import React, { useState } from "react"
+import { signOut } from "firebase/auth"
+import { useNavigate } from "react-router-dom"
+import { auth } from "../utils/firebase"
+import { useSelector } from "react-redux"
 
 const Header = () => {
-  const [isSignInForm, setIsSignInForm] = useState(false)
-  const toggleSignInForm = () => {
-    setIsSignInForm(!isSignInForm)
+  const navigate = useNavigate()
+
+  const handleSignout = () => {
+    signOut(auth)
+      .then(() => {
+        navigate("/")
+      })
+      .catch((error) => {
+        // An error happened.
+      })
   }
+  const user = useSelector((store) => store.user)
   return (
-    <div className=" relative w-[100%]">
-      <div className=" bg-gradient-to-b from-black w-[15%] fixed">
-        <img
-          className="bg-gradient-to-b from-black z-10 p-4 "
-          src="
+    <div className="flex justify-between absolute w-screen px-8 py-2 z-10 bg-gradient-to-b from-black ">
+      <img
+        className="w-44"
+        src="
 https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
-          alt="Netflix Logo"
-        ></img>
-      </div>
-      <form className="absolute w-3/12 bg-black p-12 mx-auto my-52  left-0 right-0 rounded-lg opacity-95 text-white">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-semibold">
-            {isSignInForm ? "Sign In" : "Sign Up"}
-          </h1>
-          <div className="flex flex-col gap-4 my-4 ">
-            {!isSignInForm && (
-              <input
-                type="text"
-                placeholder="Full Name.."
-                className="w-full p-2 bg-gray-700 opacity-100"
-              />
-            )}
-            <input
-              type="text"
-              placeholder="Mail.."
-              className="w-full p-2 bg-gray-700 opacity-100"
-            />
-            <input
-              type="password"
-              placeholder="Password.."
-              className="w-full p-2 bg-gray-700 opacity-100"
-            />
-          </div>
-          <button className="bg-red-700 px-4 w-full py-2 rounded-lg">
-            {isSignInForm ? "Sign In" : "Sign Up"}
+        alt="Netflix Logo"
+      ></img>
+      {user && (
+        <div className="flex  flex-col items-center p-2">
+          <img className="w-12 h-12" src={user?.photoURL} alt="userIcon"></img>
+          <button className="text-white font-bold" onClick={handleSignout}>
+            SignOut
           </button>
-          <p className="mt-2 cursor-pointer" onClick={toggleSignInForm}>
-            {isSignInForm
-              ? "New to Netflix? Sign Up Now"
-              : "Already Rgistered, Sign In Now"}
-          </p>
         </div>
-      </form>
+      )}
     </div>
   )
 }

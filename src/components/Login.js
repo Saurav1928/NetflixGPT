@@ -10,10 +10,11 @@ import { auth } from "../utils/firebase"
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { addUser } from "../utils/userSlice"
+import { BG_IMG, SIGN_IN_LOGO } from "../utils/constants"
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(false)
   const [errMessage, setErrorMessage] = useState(null)
-  const navigate = useNavigate()
+
   const name = useRef()
   const email = useRef()
   const password = useRef()
@@ -25,9 +26,6 @@ const Login = () => {
   const validateForm = () => {
     const message = checkValidation(email.current.value, password.current.value)
     setErrorMessage(message)
-    console.log(email.current.value)
-    console.log(password.current.value)
-    // console.log(password)
     if (message) return
 
     if (!isSignInForm) {
@@ -37,11 +35,10 @@ const Login = () => {
         password.current.value
       )
         .then((userCredential) => {
-          // Signed up
           const user = userCredential.user
           updateProfile(user, {
             displayName: name.current.value,
-            photoURL: "https://avatars.githubusercontent.com/u/113550158?v=4",
+            photoURL: SIGN_IN_LOGO,
           })
             .then(() => {
               const { uid, email, displayName, photoURL } = auth.currentUser
@@ -50,26 +47,19 @@ const Login = () => {
                   uid: uid,
                   email: email,
                   displayName: displayName,
-                  photoURL,
+                  photoURL: photoURL,
                 })
               )
-
-              console.log(user)
-              navigate("/browse")
             })
             .catch((error) => {
               setErrorMessage(error.message)
             })
-
-          // ...
         })
         .catch((error) => {
           const errorCode = error.code
           const errorMessage = error.message
           const errFound = errorCode + " " + errorMessage
-          console.log(errFound)
           setErrorMessage(errFound)
-          // ..
         })
     } else {
       signInWithEmailAndPassword(
@@ -77,18 +67,10 @@ const Login = () => {
         email.current.value,
         password.current.value
       )
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user
-          console.log(user)
-          navigate("/browse")
-          // ...
-        })
+        .then((userCredential) => {})
         .catch((error) => {
           const errorCode = error.code
           const errorMessage = error.message
-          const errFound = errorMessage
-          console.log(errFound)
           setErrorMessage("Invalid Credentals")
         })
     }
@@ -96,11 +78,7 @@ const Login = () => {
   return (
     <div className="relative">
       <Header />
-      <img
-        className="absolute"
-        src="https://assets.nflxext.com/ffe/siteui/vlv3/9134db96-10d6-4a64-a619-a21da22f8999/a449fabb-05e4-4c8a-b062-b0bec7d03085/IN-en-20240115-trifectadaily-perspective_alpha_website_large.jpg"
-        alt="bg-logo"
-      />
+      <img className="absolute" src={BG_IMG} alt="bg-logo" />
       <div className=" absolute w-[100%]">
         <form
           onSubmit={(e) => e.preventDefault()}

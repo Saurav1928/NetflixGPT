@@ -7,7 +7,6 @@ import {
 } from "firebase/auth"
 import Header from "./Header"
 import { auth } from "../utils/firebase"
-import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { addUser } from "../utils/userSlice"
 import { BG_IMG, SIGN_IN_LOGO } from "../utils/constants"
